@@ -1,0 +1,7 @@
+.env
+
+swagger_output.json
+
+/node_modules/
+
+/.idea/

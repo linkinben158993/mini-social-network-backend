@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
+const swaggerUI = require('swagger-ui-express');
 
 const app = express();
 
@@ -44,6 +45,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Swagger configuration
+// eslint-disable-next-line node/no-unpublished-require
+const swaggerFile = require('./swagger_output.json');
+app.use('/apis-doc', swaggerUI.serve, swaggerUI.setup(swaggerFile));
 
 // Mongo configuration
 mongoose

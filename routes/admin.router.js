@@ -9,36 +9,49 @@ const vnBadwords = require("../utils/vietnamese-badword.js");
 
 router.get("/auto-check-accept-question", async function (req, res) {
   const qqs = await adminModel.allQuetionQueue();
+  const queInfo = req.query[0];
+  const tagInfo = req.query[1];
 
-  //   for (const i of vnBadwords) {
-  //     console.log("địt mẹ mày mày mày".includes(i));
-  //   }
+  var error_flag = false;
+  if (queInfo !== undefined) {
+    for (const i of vnBadwords) {
+      if (queInfo.que_content.includes(i) || queInfo.que_title.includes(i)) {
+        error_flag = true;
+        break;
+      }
 
-  for (const i of qqs) {
-    for (const j of vnBadwords) {
-      if (+i.is_accepted != 1) {
-        //   console.log(i);
-        if (i.que_content.includes(j) || i.que_title.includes(j)) {
-          console.log("Nói bậy!");
-          break;
-        } else {
-          const entity = {
-            is_accepted: true,
-          };
-          const condition = {
-            que_id: i.que_id,
-          };
-          const ret = await adminModel.handleAcceptQuestion(entity, condition);
-
-          return res.json({
-            is_accepted: +ret.affectedRows === 1,
-            question_info: i,
-          });
+      if (tagInfo !== undefined) {
+        for (const j of tagInfo) {
+          if (j.label_name.includes(i)) {
+            error_flag = true;
+            break;
+          }
         }
       }
     }
   }
-  return res.json({ is_accepted: false });
+
+  if (error_flag === true) {
+    return res.json({ is_accepted: false, question_info: queInfo });
+  }
+
+  const entity = {
+    is_accepted: true,
+  };
+  const condition = {
+    que_id: queInfo.que_id,
+  };
+
+  const ret = await adminModel.handleAcceptQuestion(entity, condition);
+
+  if (+ret.affectedRows === 1) {
+    return res.json({
+      is_accepted: true,
+      question_info: queInfo,
+    });
+  }
+
+  return res.json({ is_accepted: false, question_info: queInfo });
 });
 
 module.exports = router;

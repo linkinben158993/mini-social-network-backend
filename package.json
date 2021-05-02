@@ -28,6 +28,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "randomstring": "^1.1.5",
     "swagger-autogen": "^2.5.10",
     "swagger-jsdoc": "^6.0.2",
     "swagger-ui-express": "^4.1.6",

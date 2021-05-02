@@ -30,7 +30,10 @@ router.get("/auto-check-accept-question", async function (req, res) {
           };
           const ret = await adminModel.handleAcceptQuestion(entity, condition);
 
-          return res.json({ is_accepted: +ret.affectedRows === 1 });
+          return res.json({
+            is_accepted: +ret.affectedRows === 1,
+            question_info: i,
+          });
         }
       }
     }

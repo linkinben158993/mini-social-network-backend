@@ -16,7 +16,6 @@ router.post("/", function (req, res) {
   dataClientCanAccessWithToken.forEach((e) => {
     if (e.id === client.id) {
       flag = true;
-      break;
     }
   });
 

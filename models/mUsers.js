@@ -1,25 +1,20 @@
-const mongoose = require('mongoose');
+const db = require("./../utils/db");
 
-const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true
+const users = `users`;
+
+const userModel = {
+    getAll() {
+        const sql = `SELECT * FROM  ${users}`;
+        return db.load(sql);
     },
-    password: {
-        type: String,
-        required: true
+    userByUsername(username) {
+        const sql = `SELECT * FROM  ${users} WHERE user_name = '${username}'`;
+        return db.load(sql);
     },
-    email: {
-        type: String,
-        required: true
-    },
-    role: {
-        type: String,
-        enum: ['anonymous', 'user', 'admin']
-    },
-    rank: {
-        type: String
+    userByUserId(userId) {
+        const sql = `SELECT * FROM  ${users} WHERE user_id = '${userId}'`;
+        return db.load(sql);
     }
-});
+};
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = userModel;

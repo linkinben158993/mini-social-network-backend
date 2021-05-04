@@ -23,8 +23,8 @@ dotenv.config();
 //   })
 // );
 
-app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 app.enable("trust proxy");
 app.use(
@@ -69,8 +69,8 @@ app.use("/apis-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 //     app.emit('app_started');
 // });
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+//app.use("/", indexRouter);
+//app.use("/users", usersRouter);
 
 // API Service
 app.use("/api/auth", require("./routes/auth.router"));

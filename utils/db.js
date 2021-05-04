@@ -8,6 +8,7 @@ const pool = mysql.createPool({
     password: "root",
     database: "mini_social_network",
     connectionLimit: 50,
+    multipleStatements: true
 });
 
 // promisify bind pool to a promise and remove callback
@@ -29,4 +30,12 @@ module.exports = {
     del: (condition, tblName) => {
         return pool_query(`delete from ${tblName} where ? `, condition);
     },
+    bulkUpdate: (tableName, items) => {
+        let queries = '';
+        items.forEach((value) => {
+            queries += mysql.format('update answers set is_accepted=true where ans_id=?;', value.ans_id);
+        })
+        console.log(queries);
+        return pool_query(queries);
+    }
 };

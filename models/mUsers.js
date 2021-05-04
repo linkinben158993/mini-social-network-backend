@@ -1,6 +1,7 @@
 const db = require("./../utils/db");
 
-const users = `users`;
+const users = 'users';
+const answer = 'answers'
 
 const userModel = {
     getAll() {
@@ -14,6 +15,13 @@ const userModel = {
     userByUserId(userId) {
         const sql = `SELECT * FROM  ${users} WHERE user_id = '${userId}'`;
         return db.load(sql);
+    },
+    allPendingAnswer() {
+        const sql = `SELECT * FROM ${answer} WHERE is_accepted = 0`;
+        return db.load(sql);
+    },
+    updatePendingAnswer(acceptedAnswers) {
+        return db.bulkUpdate(answer, acceptedAnswers);
     }
 };
 

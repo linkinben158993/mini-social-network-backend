@@ -18,7 +18,7 @@ const vnBadwords = [
   "ngu",
   "cứt",
   "chó chết",
-  "Chết mẹ",
+  "chết mẹ",
   "đi ăn cứt",
   "ăn máu lồn",
 ];

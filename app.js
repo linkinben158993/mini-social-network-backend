@@ -9,6 +9,7 @@ const dotenv = require("dotenv");
 const session = require("express-session");
 const passport = require("passport");
 const swaggerUI = require("swagger-ui-express");
+require("dotenv").config();
 
 const app = express();
 
@@ -76,7 +77,7 @@ app.use("/apis-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 app.use("/api/auth", require("./routes/auth.router"));
 app.use("/api/admin", require("./routes/admin.router"));
 
-const CronJob = require('./utils/node-cron');
+const CronJob = require("./utils/node-cron");
 
 CronJob.autoFilterAnswer();
 

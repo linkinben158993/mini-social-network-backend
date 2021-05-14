@@ -10,6 +10,7 @@ const gmail = require("./../utils/gmail.js");
 
 router.get("/auto-check-accept-question", async function (req, res) {
   const qqs = await adminModel.allQuetionQueue();
+
   const queInfo = req.query[0];
   const tagInfo = req.query[1];
 

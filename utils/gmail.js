@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
+const adModel = require("../models/mAdmin");
 
 dotenv.config();
 
@@ -19,20 +20,27 @@ let transporter = nodemailer.createTransport({
 });
 
 module.exports = {
-  noTifyToAdmin: (admin_email, que_title, question) => {
-    const options = {
-      from: `mini-q2a - UDPT04 - API Service - ${user}`,
-      to: `${admin_email}`,
-      subject: `Question ${que_title} was accepted!`,
-      text: `Question ${que_title} was accepted!\nQuestion Accepted Information\n${JSON.stringify(
-        question
-      )}`,
-    };
+  noTifyToAdmin: async (admin_email, que_title, question) => {
+    const admin = await adModel.getAdminInfo();
+    console.log(admin);
 
-    transporter.sendMail(options, (er, info) => {
-      if (er) console.log(er);
-      else console.log(info);
-    });
+    if (+admin.toggle_send_notify_status === 0) {
+      return;
+    } else {
+      const options = {
+        from: `mini-q2a - UDPT04 - API Service - ${user}`,
+        to: `${admin_email}`,
+        subject: `Question ${que_title} was accepted!`,
+        text: `Question ${que_title} was accepted!\nQuestion Accepted Information\n${JSON.stringify(
+          question
+        )}`,
+      };
+
+      transporter.sendMail(options, (er, info) => {
+        if (er) console.log(er);
+        else console.log(info);
+      });
+    }
   },
 
   notifyAnswerToAdmin: (admin_email, number, answer) => {

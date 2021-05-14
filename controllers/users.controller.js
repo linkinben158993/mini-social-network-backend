@@ -66,5 +66,67 @@ module.exports = {
                 data: response,
             });
         }
+    },
+    createQuestion: async (req, res) => {
+        const {que_id, que_content, que_title, que_cate_id} = req.body;
+        if (!que_id || !que_content || !que_title || !que_cate_id) {
+            res.status(400).json({
+                message: {
+                    msgBody: 'Bad request!',
+                    msgError: true,
+                },
+            })
+        } else {
+            const questionQueue = req.body;
+            questionQueue.user_id = req.user.user_id;
+            mUsers.createNewQuestion(questionQueue).then((response) => {
+                res.status(200).json({
+                    message: {
+                        msgBody: 'Insert new question successful!',
+                        msgError: false,
+                    },
+                    data: response,
+                });
+            }).catch((reason) => {
+                res.status(500).json({
+                    message: {
+                        msgBody: 'Something happened',
+                        msgError: true,
+                    },
+                    trace: reason,
+                });
+            });
+        }
+    },
+    createAnswer: async (req, res) => {
+    const {ans_id, ans_content, ans_source_URL, que_id} = req.body;
+    if (!ans_id || !ans_content || !ans_source_URL || !que_id) {
+        res.status(400).json({
+            message: {
+                msgBody: 'Bad request!',
+                msgError: true,
+            },
+        })
+    } else {
+        const answer = req.body;
+        answer.user_id = req.user.user_id;
+        mUsers.createNewAnswer(answer).then((response) => {
+            res.status(200).json({
+                message: {
+                    msgBody: 'Insert new answer successful!',
+                    msgError: false,
+                },
+                data: response,
+            });
+        }).catch((reason) => {
+            res.status(500).json({
+                message: {
+                    msgBody: 'Something happened',
+                    msgError: true,
+                },
+                trace: reason,
+            });
+        });
     }
+},
 }

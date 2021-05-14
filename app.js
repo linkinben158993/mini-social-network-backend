@@ -70,16 +70,16 @@ app.use("/apis-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 //     app.emit('app_started');
 // });
 
-//app.use("/", indexRouter);
-//app.use("/users", usersRouter);
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
 
 // API Service
 app.use("/api/auth", require("./routes/auth.router"));
 app.use("/api/admin", require("./routes/admin.router"));
 
-const CronJob = require("./utils/node-cron");
-
-CronJob.autoFilterAnswer();
+// const CronJob = require("./utils/node-cron");
+//
+// CronJob.autoFilterAnswer();
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

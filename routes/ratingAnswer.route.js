@@ -10,7 +10,7 @@ router.get('/', async function (req, res) {
     });
   }
   return res.json({
-    ratingAnswers: ret
+    data: ret
   });
 });
 

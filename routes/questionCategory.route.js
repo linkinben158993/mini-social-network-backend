@@ -10,7 +10,7 @@ router.get('/', async function (req, res) {
     });
   }
   return res.json({
-    questionCategories: ret
+    data: ret
   });
 });
 

@@ -14,7 +14,7 @@ router.get('/', async function (req, res) {
     });
   }
   return res.json({
-    users: ret
+    data: ret
   });
 });
 

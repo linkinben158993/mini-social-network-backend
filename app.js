@@ -29,11 +29,13 @@ dotenv.config();
 //app.use(passport.session());
 
 app.enable('trust proxy');
-app.use(
-  cors({
-    credentials: true
-  })
-);
+// app.use(
+//   cors({
+//     credentials: true
+//   })
+// );
+
+app.use(cors());
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');

@@ -20,47 +20,68 @@ router.get('/', async function (req, res) {
 router.post('/', async function (req, res) {
   if (!req.body.ans_content || !req.body.que_id || !req.body.user_id) {
     return res.status(400).json({
-      message: 'error'
+      message: 'Data from client is error!'
     });
   }
 
   const configAPI = await configAPIModel.configAnswerInfo();
+  // database should have records default
 
   if (configAPI === null) {
-    // add cofig
+    return res.status(500).json({
+      message: 'Database error!'
+    });
   }
 
   // update config
-  const columns = configAPI['column_name'].split(',');
+  // get column need to add
 
-  let entity = {
-    ...columns
-  };
+  let columns = configAPI['column_name'].split(',');
 
-  for (let i = 0; i < columns.length; ++i) {
-    let field_i = columns[i];
-    let { field_i } = req.body;
-    entity[`${columns[i]}`] = field_i;
-    console.log(field_i);
-    console.log({ field_i });
+  let columns_from_body = [];
+  const clientData = req.body;
+
+  for (let e in clientData) {
+    columns_from_body.push(e.toString());
   }
 
-  console.log(entity);
+  if (columns_from_body.length !== columns.length) {
+    return res.status(400).json({
+      message: 'Column does not match!'
+    });
+  }
 
-  // const entity = {
-  //   ans_id: randomstring.generate(10),
-  //   ans_content: req.body.ans_content,
-  //   ans_source_URL: req.body.ans_source_URL,
-  //   ans_images: req.body.ans_images,
-  //   createdAt: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-  //   que_id: req.body.que_id,
-  //   user_id: req.body.user_id,
-  //   is_accepted: req.body.is_accepted
-  // };
+  let isMatch = true;
 
-  // const ret = await ansModel.add(entity);
+  columns = columns.sort();
+  columns_from_body = columns_from_body.sort();
+
+  for (let i = 0; i < columns.length; i++) {
+    if (columns[i] !== columns_from_body[i]) {
+      isMatch = false;
+      break;
+    }
+  }
+
+  if (isMatch === false) {
+    return res.status(400).json({
+      message: 'Column does not match!'
+    });
+  }
+
+  // if match
+
+  const entity = {
+    ans_id: randomstring.generate(10),
+    createdAt: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+    ...req.body
+  };
+
+  const ret = await ansModel.add(entity);
+
   return res.json({
-    ret: 1
+    message: 'Add success!',
+    status_added: ret.affectedRows
   });
 });
 

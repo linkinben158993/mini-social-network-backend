@@ -17,6 +17,25 @@ const model = {
     }
 
     return ret[0];
+  },
+
+  async configUserInfo() {
+    const sql = `
+    select * from ${tblName}
+    where table_name = 'users'
+    `;
+    const ret = await db.load(sql);
+    if (ret.length === 0) return null;
+    return ret[0];
+  },
+  async configQuestionQueueInfo() {
+    const sql = `
+    select * from ${tblName}
+    where table_name = 'questionqueue'
+    `;
+    const ret = await db.load(sql);
+    if (ret.length === 0) return null;
+    return ret[0];
   }
 };
 

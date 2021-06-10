@@ -3,6 +3,8 @@ const router = express.Router();
 const passport = require('../middlewares/passport');
 const userCtr = require('../controllers/users.controller');
 const userModel = require('../models/mUsers');
+const configAPIModel = require('../models/configAPI.model');
+const randomstring = require('randomstring');
 
 /* GET users listing. */
 router.get('/', async function (req, res) {
@@ -15,6 +17,68 @@ router.get('/', async function (req, res) {
   }
   return res.json({
     data: ret
+  });
+});
+
+router.post('/', async function (req, res) {
+  if (!req.body.user_name || !req.body.user_pass || !req.body.user_type) {
+    return res.status(400).json({
+      message: 'Data client is error!'
+    });
+  }
+
+  const configAPI = await configAPIModel.configUserInfo();
+
+  // database should have records default
+  if (configAPI === null) {
+    return res.status(500).json({
+      message: 'Database error!'
+    });
+  }
+
+  let columns = configAPI['column_name'].split(',');
+
+  let columns_from_body = [];
+  const clientData = req.body;
+
+  for (let e in clientData) {
+    columns_from_body.push(e.toString());
+  }
+
+  if (columns_from_body.length !== columns.length) {
+    return res.status(400).json({
+      message: 'Column does not match!'
+    });
+  }
+
+  columns = columns.sort();
+  columns_from_body = columns_from_body.sort();
+
+  let isMatch = true;
+
+  for (let i = 0; i < columns.length; ++i) {
+    if (columns[i] !== columns_from_body[i]) {
+      isMatch = false;
+      break;
+    }
+  }
+
+  if (isMatch === false) {
+    return res.status(400).json({
+      message: 'Column does not match!'
+    });
+  }
+
+  const entity = {
+    user_id: randomstring.generate(10),
+    ...req.body
+  };
+
+  const ret = await userModel.add(entity);
+
+  return res.json({
+    message: 'Add success!',
+    status_added: ret.affectedRows
   });
 });
 

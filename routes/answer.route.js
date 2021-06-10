@@ -101,4 +101,20 @@ router.get('/column-default', async function (req, res) {
   });
 });
 
+router.get('/column-remain', async function (req, res) {
+  const ret = await configAPIModel.configAnswerInfo();
+
+  if (ret === null) {
+    return res.status(500).json({
+      message: 'Database error!'
+    });
+  }
+
+  const column_remain = ret['column_remain'].split(',');
+
+  return res.json({
+    column_remain
+  });
+});
+
 module.exports = router;

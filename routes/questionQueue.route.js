@@ -17,13 +17,23 @@ router.get('/', async function (req, res) {
   });
 });
 
-router.post('/', async function (req, res) {
-  if (!req.body.que_content || !req.body.user_id || !req.body.que_cate_id) {
-    return res.status(400).json({
-      message: 'Data client is error!'
+router.get('/column-default', async function (req, res) {
+  const ret = await configAPIModel.configQuestionQueueInfo();
+
+  if (ret === null) {
+    return res.status(500).json({
+      message: 'Database error!'
     });
   }
 
+  const column_added = ret['column_default'].split(',');
+
+  return res.json({
+    column_added
+  });
+});
+
+router.post('/', async function (req, res) {
   const configAPI = await configAPIModel.configQuestionQueueInfo();
 
   // database should have records default

@@ -20,13 +20,23 @@ router.get('/', async function (req, res) {
   });
 });
 
-router.post('/', async function (req, res) {
-  if (!req.body.user_name || !req.body.user_pass || !req.body.user_type) {
-    return res.status(400).json({
-      message: 'Data client is error!'
+router.get('/column-default', async function (req, res) {
+  const ret = await configAPIModel.configUserInfo();
+
+  if (ret === null) {
+    return res.status(500).json({
+      message: 'Database error!'
     });
   }
 
+  const column_added = ret['column_default'].split(',');
+
+  return res.json({
+    column_added
+  });
+});
+
+router.post('/', async function (req, res) {
   const configAPI = await configAPIModel.configUserInfo();
 
   // database should have records default

@@ -18,11 +18,11 @@ router.get('/', async function (req, res) {
 });
 
 router.post('/', async function (req, res) {
-  if (!req.body.ans_content || !req.body.que_id || !req.body.user_id) {
-    return res.status(400).json({
-      message: 'Data from client is error!'
-    });
-  }
+  // if (!req.body.ans_content || !req.body.que_id || !req.body.user_id) {
+  //   return res.status(400).json({
+  //     message: 'Data from client is error!'
+  //   });
+  // }
 
   const configAPI = await configAPIModel.configAnswerInfo();
   // database should have records default
@@ -82,6 +82,22 @@ router.post('/', async function (req, res) {
   return res.json({
     message: 'Add success!',
     status_added: ret.affectedRows
+  });
+});
+
+router.get('/column-default', async function (req, res) {
+  const ret = await configAPIModel.configAnswerInfo();
+
+  if (ret === null) {
+    return res.status(500).json({
+      message: 'Database error!'
+    });
+  }
+
+  const column_added = ret['column_default'].split(',');
+
+  return res.json({
+    column_added
   });
 });
 

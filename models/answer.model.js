@@ -5,6 +5,9 @@ const answerModel = {
   all() {
     const sql = `select * from ${tbl_answers}  `;
     return db.load(sql);
+  },
+  add(entity) {
+    return db.add(entity, tbl_answers);
   }
 };
 

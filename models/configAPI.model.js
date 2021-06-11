@@ -36,6 +36,50 @@ const model = {
     const ret = await db.load(sql);
     if (ret.length === 0) return null;
     return ret[0];
+  },
+
+  patchColumnName(arrayColName, tableName) {
+    const entity = {
+      column_name: arrayColName
+    };
+    const condition = {
+      table_name: `${tableName}`
+    };
+    return db.update(entity, condition, tblName);
+  },
+  async getToggleColName(tableName) {
+    const sql = `select column_name 
+    from ${tblName} 
+    where  table_name = '${tableName}'`;
+    const ret = await db.load(sql);
+
+    if (ret.length === 0) {
+      return [];
+    }
+
+    return ret[0].column_name;
+  },
+
+  async getColRemain(tableName) {
+    const sql = `select column_remain 
+    from ${tblName} 
+    where  table_name = '${tableName}'`;
+    const ret = await db.load(sql);
+    if (ret.length === 0) {
+      return [];
+    }
+
+    return ret[0].column_remain;
+  },
+
+  patchColumnRemain(arrayColRemain, tableName) {
+    const entity = {
+      column_remain: arrayColRemain
+    };
+    const condition = {
+      table_name: `${tableName}`
+    };
+    return db.update(entity, condition, tblName);
   }
 };
 

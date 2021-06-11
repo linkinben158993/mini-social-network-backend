@@ -117,4 +117,86 @@ router.get('/column-remain', async function (req, res) {
   });
 });
 
+router.get('/toggle-column-name', async function (req, res) {
+  const table_name = `answers`;
+  const columns = await configAPIModel.getToggleColName(table_name);
+
+  if (columns === undefined) {
+    return res.status(500).json({
+      message: 'Some thing broke!'
+    });
+  }
+
+  console.log(columns);
+  const ret = columns.split(',');
+  return res.json({
+    toggle_column_name: ret
+  });
+});
+
+router.patch('/column-name', async function (req, res) {
+  if (!req.body.column_name || !req.body.table_name) {
+    return res.status(400).json({
+      message: 'Data from client is error!'
+    });
+  }
+
+  const array_column_name = req.body.column_name;
+  if (array_column_name.length === 1) {
+    let col_name_when_len_is_1 = array_column_name[0];
+    let table_name_when_len_is_1 = req.body.table_name;
+
+    // patch column name
+    const ret_patch_column_name_when_len_is_1 =
+      await configAPIModel.patchColumnName(
+        col_name_when_len_is_1,
+        table_name_when_len_is_1
+      );
+
+    // remove column_remain
+
+    const ret_patch_col_remain_when_len_is_1 =
+      await configAPIModel.patchColumnRemain('', `answers`);
+
+    return res.json({
+      ret_patch_column_name_when_len_is_1,
+      ret_patch_col_remain_when_len_is_1
+    });
+  }
+
+  const column_name = req.body.column_name.join(','); // join array to string
+  const table_name = req.body.table_name;
+
+  // patch column name
+  const ret_patch_column_name = await configAPIModel.patchColumnName(
+    column_name,
+    table_name
+  );
+
+  // remove column_remain
+  let col_remain = await configAPIModel.getColRemain(`answers`);
+  col_remain = col_remain.split(',');
+  console.log(col_remain);
+
+  for (let i = 0; i < array_column_name.length; ++i) {
+    col_remain = col_remain.filter((e) => {
+      return e !== array_column_name[i];
+    });
+  }
+
+  col_remain = col_remain.join(',');
+
+  console.log(col_remain);
+
+  const ret_patch_col_remain = await configAPIModel.patchColumnRemain(
+    col_remain,
+    `answers`
+  );
+
+  return res.json({
+    ret_patch_column_name,
+    ret_patch_col_remain
+  });
+});
+
 module.exports = router;

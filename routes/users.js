@@ -8,7 +8,17 @@ router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
 
-router.post('/login', userCtr.login);
+router.post('/login'
+    /* #swagger.parameters['loginUser'] = {
+         in: 'body',
+         description: 'Info for logging in.',
+         required: true,
+         schema: {
+          $username: "an@gmail.com",
+          $password: "123456"
+         }
+  } */
+    , userCtr.login);
 
 router.get('/all', passport.jwtStrategy, userCtr.getAllUser);
 

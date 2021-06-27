@@ -25,7 +25,9 @@ passport.use(
       secretOrKey: process.env.secretOrKey,
     },
     async (payload, done) => {
-      const foundUser = await Users.userByUserId(payload.sub);
+      const sub = JSON.parse(payload.sub)
+      const { user_id } = sub;
+      const foundUser = await Users.userByUserId(user_id);
       if (foundUser.length == 0) {
         return done(null, false);
       } else {

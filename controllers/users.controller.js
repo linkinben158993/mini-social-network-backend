@@ -29,8 +29,8 @@ module.exports = {
             } else if (err && err.errCode) {
                 res.status(400).json(err);
             } else {
-                const token = signToken(callBack.user_id);
                 const {email, user_name, user_type, user_rank} = callBack;
+                const token = signToken(JSON.stringify(callBack));
                 res.status(200).json({
                     isAuthenticated: true,
                     user: {

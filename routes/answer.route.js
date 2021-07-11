@@ -36,7 +36,7 @@ router.post('/', async function (req, res) {
   // update config
   // get column need to add
 
-  let columns = configAPI['column_name'].split(',');
+  let columns = configAPI['column_default'].split(',');
 
   let columns_from_body = [];
   const clientData = req.body;

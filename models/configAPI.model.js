@@ -21,13 +21,23 @@ const model = {
 
   async configUserInfo() {
     const sql = `
-    select * from ${tblName}
+    select column_name from ${tblName}
     where table_name = 'users'
     `;
     const ret = await db.load(sql);
+
     if (ret.length === 0) return null;
-    return ret[0];
+    return ret[0].column_name;
   },
+  async getDefaultUserFields() {
+    const sql = `select column_default 
+    from ${tblName}
+    where table_name = 'users'`;
+    const ret = await db.load(sql);
+
+    return ret[0].column_default;
+  },
+
   async configQuestionQueueInfo() {
     const sql = `
     select * from ${tblName}

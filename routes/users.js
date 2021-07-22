@@ -20,6 +20,22 @@ router.get('/', async function (req, res) {
   });
 });
 
+router.get('/column-config', async function (req, res) {
+  const ret = await configAPIModel.configUserInfo();
+
+  if (ret === null) {
+    return res.status(500).json({
+      message: 'Database error!'
+    });
+  }
+
+  const column_config = ret.split(',');
+
+  return res.json({
+    column_config
+  });
+});
+
 router.get('/column-default', async function (req, res) {
   const ret = await configAPIModel.getDefaultUserFields();
 
@@ -29,10 +45,10 @@ router.get('/column-default', async function (req, res) {
     });
   }
 
-  const column_added = ret.split(',');
+  const column_default = ret.split(',');
 
   return res.json({
-    column_added
+    column_default
   });
 });
 

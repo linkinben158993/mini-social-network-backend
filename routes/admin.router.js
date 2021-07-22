@@ -1,14 +1,15 @@
-const router = require("express").Router();
-const adminModel = require("../models/mAdmin");
-const validator = require("validator").default;
-const badWords = require("bad-words");
-const vnBadwords = require("../utils/vietnamese-badword.js");
-const gmail = require("./../utils/gmail.js");
+const router = require('express').Router();
+const adminModel = require('../models/mAdmin');
+const validator = require('validator').default;
+const badWords = require('bad-words');
+const vnBadwords = require('../utils/vietnamese-badword.js');
+const gmail = require('./../utils/gmail.js');
+const configAPIModel = require('../models/configAPI.model');
 
 // const a = "<p>Địt mẹ mày</p>";
 // console.log(a.includes("Địt"));
 
-router.get("/auto-check-accept-question", async function (req, res) {
+router.get('/auto-check-accept-question', async function (req, res) {
   const qqs = await adminModel.allQuetionQueue();
 
   const queInfo = req.query[0];
@@ -38,29 +39,51 @@ router.get("/auto-check-accept-question", async function (req, res) {
   }
 
   const entity = {
-    is_accepted: true,
+    is_accepted: true
   };
   const condition = {
-    que_id: queInfo.que_id,
+    que_id: queInfo.que_id
   };
 
   const ret = await adminModel.handleAcceptQuestion(entity, condition);
 
   if (+ret.affectedRows === 1) {
     // notify
-    const admin_email = "caovanducs@gmail.com";
+    const admin_email = 'caovanducs@gmail.com';
     const que_title = queInfo.que_title;
     gmail.noTifyToAdmin(admin_email, que_title, {
       ...queInfo,
-      is_accepted: true,
+      is_accepted: true
     });
     return res.json({
       is_accepted: true,
-      question_info: queInfo,
+      question_info: queInfo
     });
   }
 
   return res.json({ is_accepted: false, question_info: queInfo });
+});
+
+router.patch('/config-api-users', async function (req, res) {
+  var fields = req.body.fields;
+  if (fields === '') {
+    const ret = await configAPIModel.patchColumnName(fields, `users`);
+
+    return res.json({
+      message: 'Update ConfigAPI Success!',
+      ret
+    });
+  }
+  if (!fields) {
+    return res.status(400).json({ message: 'Fields not found!' });
+  }
+
+  const ret = await configAPIModel.patchColumnName(fields, `users`);
+
+  return res.json({
+    message: 'Update ConfigAPI Success!',
+    ret
+  });
 });
 
 module.exports = router;

@@ -57,12 +57,30 @@ router.post('/', async function (req, res) {
 
   // database should have records default
   if (configAPI === null) {
-    return res.status(500).json({
-      message: 'Database error!'
+    // no column was added
+    // then add user like normal
+    const entity = {
+      user_id: randomstring.generate(10),
+      ...req.body
+    };
+
+    const ret = await userModel.add(entity);
+
+    return res.json({
+      message: 'Add success!',
+      status_added: ret.affectedRows
     });
   }
+  // if has
 
-  let columns = configAPI['column_default'].split(',');
+  // let columns = configAPI['column_default'].split(',');
+
+  // + check default
+  var default_columns = await configAPIModel.getDefaultUserFields();
+  default_columns = default_columns.split(',');
+  // + check current fields added
+
+  let columns = configAPI.split(',');
 
   let columns_from_body = [];
   const clientData = req.body;
@@ -70,46 +88,136 @@ router.post('/', async function (req, res) {
   for (let e in clientData) {
     columns_from_body.push(e.toString());
   }
+  console.log(columns_from_body);
+  console.log(default_columns);
 
-  if (columns_from_body.length !== columns.length) {
-    return res.status(400).json({
-      message: 'Column does not match!'
-    });
-  }
-
-  columns = columns.sort();
-  columns_from_body = columns_from_body.sort();
-
-  let isMatch = true;
-
-  for (let i = 0; i < columns.length; ++i) {
-    if (columns[i] !== columns_from_body[i]) {
-      isMatch = false;
-      break;
+  for (let i = 0; i < 3; ++i) {
+    if (default_columns[i] !== columns_from_body[i]) {
+      return res.status(400).json({
+        message: 'Column does not match!'
+      });
     }
   }
 
-  if (isMatch === false) {
+  if (columns_from_body.length === 4) {
+    const last_col = columns_from_body[3];
+    // handle email
+    if (last_col === 'email') {
+      for (let i = 0; i < columns.length; ++i) {
+        if (columns[i] === last_col) {
+          const entity = {
+            user_id: randomstring.generate(10),
+            ...req.body
+          };
+
+          const ret = await userModel.add(entity);
+
+          return res.json({
+            message: 'Add success!',
+            status_added: ret.affectedRows
+          });
+        }
+      }
+    }
+
+    // handle toggle_send_notify_status
+    if (last_col === 'toggle_send_notify_status') {
+      for (let i = 0; i < columns.length; ++i) {
+        if (columns[i] === last_col) {
+          for (let i = 0; i < columns.length; ++i) {
+            if (columns[i] === last_col) {
+              const entity = {
+                user_id: randomstring.generate(10),
+                ...req.body
+              };
+
+              const ret = await userModel.add(entity);
+
+              return res.json({
+                message: 'Add success!',
+                status_added: ret.affectedRows
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (columns_from_body.length === 5 && columns.length !== 2) {
     return res.status(400).json({
       message: 'Column does not match!'
     });
   }
 
-  const entity = {
-    user_id: randomstring.generate(10),
-    ...req.body
-  };
+  if (columns_from_body.length === 5) {
+    var last_two_cols = [columns_from_body[3], columns_from_body[4]];
+    var string_two_cols = last_two_cols.join(',');
+    //email,toggle_send_notify_status
+    if (string_two_cols.includes('email')) {
+      if (string_two_cols.includes('toggle_send_notify_status')) {
+        const entity = {
+          user_id: randomstring.generate(10),
+          ...req.body
+        };
 
-  const ret = await userModel.add(entity);
+        const ret = await userModel.add(entity);
 
-  return res.json({
-    message: 'Add success!',
-    status_added: ret.affectedRows
+        return res.json({
+          message: 'Add success!',
+          status_added: ret.affectedRows
+        });
+      } else {
+        const entity = {
+          user_id: randomstring.generate(10),
+          ...req.body
+        };
+
+        const ret = await userModel.add(entity);
+
+        return res.json({
+          message: 'Add success!',
+          status_added: ret.affectedRows
+        });
+      }
+    }
+
+    if (string_two_cols.includes('toggle_send_notify_status')) {
+      if (string_two_cols.includes('email')) {
+        const entity = {
+          user_id: randomstring.generate(10),
+          ...req.body
+        };
+
+        const ret = await userModel.add(entity);
+
+        return res.json({
+          message: 'Add success!',
+          status_added: ret.affectedRows
+        });
+      } else {
+        const entity = {
+          user_id: randomstring.generate(10),
+          ...req.body
+        };
+
+        const ret = await userModel.add(entity);
+
+        return res.json({
+          message: 'Add success!',
+          status_added: ret.affectedRows
+        });
+      }
+    }
+  }
+  return res.status(400).json({
+    message: 'Column does not match!'
   });
 });
 
-router.post('/login'
-    /* #swagger.parameters['loginUser'] = {
+router.post(
+  '/login',
+  /* #swagger.parameters['loginUser'] = {
          in: 'body',
          description: 'Info for logging in.',
          required: true,
@@ -118,7 +226,8 @@ router.post('/login'
           $password: "123456"
          }
   } */
-    , userCtr.login);
+  userCtr.login
+);
 
 router.get('/all', passport.jwtStrategy, userCtr.getAllUser);
 

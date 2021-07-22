@@ -37,6 +37,14 @@ const model = {
 
     return ret[0].column_default;
   },
+  async getRemainUserFields() {
+    const sql = `select column_remain 
+    from ${tblName}
+    where table_name = 'users'`;
+    const ret = await db.load(sql);
+
+    return ret[0].column_remain;
+  },
 
   async configQuestionQueueInfo() {
     const sql = `

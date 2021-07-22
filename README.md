@@ -7,8 +7,7 @@ can manage database, config API from distributed source
 
 **Team**
 
-@duccao99
-@linkinben158993
+@duccao99 @linkinben158993
 
 ## Technical stack
 

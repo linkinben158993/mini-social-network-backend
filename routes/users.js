@@ -21,7 +21,7 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/column-default', async function (req, res) {
-  const ret = await configAPIModel.configUserInfo();
+  const ret = await configAPIModel.getDefaultUserFields();
 
   if (ret === null) {
     return res.status(500).json({
@@ -29,7 +29,7 @@ router.get('/column-default', async function (req, res) {
     });
   }
 
-  const column_added = ret['column_default'].split(',');
+  const column_added = ret.split(',');
 
   return res.json({
     column_added
@@ -37,7 +37,7 @@ router.get('/column-default', async function (req, res) {
 });
 
 router.get('/column-remain', async function (req, res) {
-  const ret = await configAPIModel.configUserInfo();
+  const ret = await configAPIModel.getRemainUserFields();
 
   if (ret === null) {
     return res.status(500).json({
@@ -45,7 +45,7 @@ router.get('/column-remain', async function (req, res) {
     });
   }
 
-  const column_remain = ret['column_remain'].split(',');
+  const column_remain = ret.split(',');
 
   return res.json({
     column_remain

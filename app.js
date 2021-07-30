@@ -98,9 +98,9 @@ app.use('/api/rating-answers', require('./routes/ratingAnswer.route'));
 app.use('/api/rating-questions', require('./routes/ratingQuestion.route'));
 app.use('/api/users', require('./routes/users'));
 
-// const CronJob = require("./utils/node-cron");
-//
-// CronJob.autoFilterAnswer();
+const CronJob = require('./utils/node-cron');
+
+CronJob.autoFilterAnswer();
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
